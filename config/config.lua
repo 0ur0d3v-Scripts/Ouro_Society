@@ -81,8 +81,7 @@ Config.Clans = {
         
         -- Settings
         AllowBilling = false,
-        AllowSalary = false,
-        Webhook = ""
+        AllowSalary = false
     },
     
     -- Blue Cartsmen Clan
@@ -108,8 +107,7 @@ Config.Clans = {
         ContainerSlots = 150,
         
         AllowBilling = false,
-        AllowSalary = false,
-        Webhook = ""
+        AllowSalary = false
     }
 }
 
@@ -200,7 +198,6 @@ Config.Jobs = {
         ContainerSlots = 100,
         AllowBilling = true,
         AllowSalary = true,
-        Webhook = "",
         Grades = {
             [0] = {label = "Intern", salary = 15},
             [1] = {label = "Nurse", salary = 25},
@@ -263,7 +260,6 @@ Config.Jobs = {
         ContainerSlots = 75,
         AllowBilling = true,
         AllowSalary = false,
-        Webhook = "",
         Grades = {
             [0] = {label = "Stable Hand", salary = 0},
             [1] = {label = "Trainer", salary = 0},
@@ -289,11 +285,10 @@ Config.Jobs = {
         ContainerName = "Mining Storage",
         ContainerSlots = 50,
         AllowBilling = false,
+        AllowBilling = false,
         AllowSalary = false,
-        Webhook = "",
         Grades = {
-            [0] = {label = "Miner", salary = 0},
-            [1] = {label = "Foreman", salary = 0},
+            [0] = {label = "Miner", salary = 0},},
             [2] = {label = "Supervisor", salary = 0},
             [3] = {label = "Mine Boss", salary = 0},
         },
@@ -326,16 +321,9 @@ Config.Alerts = {
 }
 
 Config.MedicResponseCommand = "medicresponse"
-
--- Duty Webhooks
-Config.DutyWebhooks = {
-    doctor = "",
-    sheriff = "",
-    government = "",
-}
+Config.MedicResponseCommand = "medicresponse"
 
 -- Language Configuration
-Config.Language = {
     -- Job Menu
     JobMenu = "Job Menu",
     ManageEmployees = "Manage Employees",

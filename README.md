@@ -24,8 +24,6 @@ A comprehensive multijob, subjob, and clan management system for RedM servers us
 - **Clan Storage**: Shared inventory system for clan members
 - **Member Management**: Invite, kick, and promote members
 - **Ownership Transfer**: Leaders can transfer ownership
-- **Clan Webhooks**: Discord integration for clan activities
-
 ### UI Features
 - Job center interface for job selection
 - Boss menu for employee management
@@ -116,7 +114,6 @@ myjob = {
     ContainerName = "My Job Storage",
     AllowBilling = true,
     AllowSalary = true,
-    Webhook = "",            -- Discord webhook URL
     Grades = {
         [0] = {label = "Employee", salary = 10},
         [1] = {label = "Senior", salary = 20},
@@ -249,20 +246,6 @@ exports['Ouro_Society']:GetClanMembers(clanId)
 exports['Ouro_Society']:IsPlayerInClan(charIdentifier)
 ```
 
-### Webhook Logging
-Each job can have its own Discord webhook for logging:
-- Hiring/Firing
-- Rank changes
-- Salary updates
-- Ledger transactions
-- Bill payments
-- Duty status changes
-
-Set webhook URL in job configuration:
-```lua
-Webhook = "https://discord.com/api/webhooks/YOUR_WEBHOOK_URL"
-```
-
 ## Integration with VORP
 
 ### Job Storage
@@ -321,3 +304,8 @@ For support, join our Discord or submit an issue on GitHub.
 
 All rights reserved. This is a custom resource for your RedM server.
 
+## Credits
+
+- **Framework**: VORP Core
+- **UI Design & Base Architecture**: Inspired by VORP framework and Syn development team
+- **Developed by**: Ouro Development

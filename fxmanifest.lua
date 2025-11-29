@@ -4,7 +4,7 @@ rdr3_warning 'I acknowledge that this is a prerelease build of RedM, and I am aw
 game "rdr3"
 lua54 'yes'
 
-author 'Ouro Development'
+author 'Ouro Development | Modified work based on VORP and Inspried by Syn frameworks'
 description 'Ouro Society - Multijob & Clan System'
 version '1.0.0'
 

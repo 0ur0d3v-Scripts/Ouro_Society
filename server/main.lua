@@ -179,9 +179,6 @@ AddEventHandler('ouro_society:server:AddJob', function(targetId, job, grade)
                     
                     TriggerClientEvent('vorp:TipRight', targetId, Config.Language.Hired .. (Config.Jobs[job] and Config.Jobs[job].Label or job), 5000)
                     TriggerClientEvent('vorp:TipRight', _source, Config.Language.YouHired .. GetPlayerName(targetId), 5000)
-                    
-                    -- Log
-                    SendWebhookLog(job, "Job Added", GetPlayerName(_source) .. " hired " .. GetPlayerName(targetId) .. " as " .. job)
                 end
             end)
         end)
@@ -223,8 +220,6 @@ AddEventHandler('ouro_society:server:RemoveJob', function(targetId, job)
             TriggerClientEvent('vorp:TipRight', targetId, Config.Language.Fired .. (Config.Jobs[job] and Config.Jobs[job].Label or job), 5000)
             TriggerClientEvent('vorp:TipRight', _source, Config.Language.YouFired .. GetPlayerName(targetId), 5000)
             
-            -- Log
-            SendWebhookLog(job, "Job Removed", GetPlayerName(_source) .. " fired " .. GetPlayerName(targetId) .. " from " .. job)
         end
     end)
 end)
@@ -254,15 +249,13 @@ AddEventHandler('ouro_society:server:SetGrade', function(targetId, job, newGrade
             TriggerClientEvent('vorp:TipRight', targetId, Config.Language.RankChanged .. gradeLabel, 5000)
             TriggerClientEvent('vorp:TipRight', _source, Config.Language.ChangeRank .. GetPlayerName(targetId) .. Config.Language.ToRank .. gradeLabel, 5000)
             
-            -- Log
-            SendWebhookLog(job, "Grade Changed", GetPlayerName(_source) .. " changed " .. GetPlayerName(targetId) .. " to grade " .. newGrade)
+            TriggerClientEvent('vorp:TipRight', _source, Config.Language.ChangeRank .. GetPlayerName(targetId) .. Config.Language.ToRank .. gradeLabel, 5000)
+            
         end
     end)
 end)
 
--- Set grade salary
-RegisterServerEvent('ouro_society:server:SetGradeSalary')
-AddEventHandler('ouro_society:server:SetGradeSalary', function(job, grade, salary)
+-- Set grade salaryro_society:server:SetGradeSalary', function(job, grade, salary)
     local _source = source
     
     if salary > Config.MaxSalary then
@@ -279,14 +272,12 @@ AddEventHandler('ouro_society:server:SetGradeSalary', function(job, grade, salar
         
         -- Log
         SendWebhookLog(job, "Salary Updated", GetPlayerName(_source) .. " set grade " .. grade .. " salary to $" .. salary)
+        TriggerClientEvent('vorp:TipRight', _source, Config.Language.SalaryUpdated .. grade .. Config.Language.To .. salary, 5000)
+        
     end)
 end)
 
--- Switch active job
-RegisterServerEvent('ouro_society:server:SwitchJob')
-AddEventHandler('ouro_society:server:SwitchJob', function(job)
-    local _source = source
-    local User = VORPcore.getUser(_source)
+-- Switch active jobPcore.getUser(_source)
     if not User then return end
     
     local Character = User.getUsedCharacter
@@ -335,15 +326,13 @@ AddEventHandler('ouro_society:server:DepositLedger', function(job, amount)
             SendWebhookLog(job, "Ledger Deposit", GetPlayerName(_source) .. " deposited $" .. amount)
         end
     else
+            TriggerClientEvent('ouro_society:client:UpdateLedger', _source, newBalance)
+            
+        end
+    else
         TriggerClientEvent('vorp:TipRight', _source, Config.Language.NoCash, 3000)
     end
-end)
-
--- Withdraw from society ledger
-RegisterServerEvent('ouro_society:server:WithdrawLedger')
-AddEventHandler('ouro_society:server:WithdrawLedger', function(job, amount)
-    local _source = source
-    local User = VORPcore.getUser(_source)
+end)local User = VORPcore.getUser(_source)
     if not User then return end
     
     local Character = User.getUsedCharacter
@@ -358,14 +347,12 @@ AddEventHandler('ouro_society:server:WithdrawLedger', function(job, amount)
         SendWebhookLog(job, "Ledger Withdrawal", GetPlayerName(_source) .. " withdrew $" .. amount)
     else
         TriggerClientEvent('vorp:TipRight', _source, result, 3000)
+        TriggerClientEvent('ouro_society:client:UpdateLedger', _source, result)
+        
+    else
+        TriggerClientEvent('vorp:TipRight', _source, result, 3000)
     end
 end)
-
--- Get ledger balance
-RegisterServerEvent('ouro_society:server:GetLedger')
-AddEventHandler('ouro_society:server:GetLedger', function(job)
-    local _source = source
-    
     -- Query database directly to ensure we get the latest value
     MySQL.query('SELECT ledger FROM ouro_society_ledger WHERE job = ?', {job}, function(result)
         local balance = 0
@@ -404,15 +391,13 @@ AddEventHandler('ouro_society:server:CreateBill', function(targetId, amount, job
     end)
 end)
 
+            TriggerClientEvent('vorp:TipRight', targetId, Config.Language.FineReceive .. "$" .. amount, 5000)
+            
+        end
+    end)
+end)
+
 -- Pay bill
-RegisterServerEvent('ouro_society:server:PayBill')
-AddEventHandler('ouro_society:server:PayBill', function(billId)
-    local _source = source
-    local User = VORPcore.getUser(_source)
-    if not User then return end
-    
-    local Character = User.getUsedCharacter
-    
     MySQL.query('SELECT * FROM ouro_bills WHERE id = ?', {billId}, function(result)
         if result and #result > 0 then
             local bill = result[1]
@@ -442,15 +427,13 @@ AddEventHandler('ouro_society:server:PayBill', function(billId)
         end
     end)
 end)
-
--- Get player bills
-RegisterServerEvent('ouro_society:server:GetBills')
-AddEventHandler('ouro_society:server:GetBills', function()
-    local _source = source
-    local User = VORPcore.getUser(_source)
-    if not User then return end
-    
-    local Character = User.getUsedCharacter
+                TriggerClientEvent('vorp:TipRight', _source, Config.Language.BillPaid .. "$" .. bill.amount, 3000)
+                
+            else
+                TriggerClientEvent('vorp:TipRight', _source, Config.Language.NoCash, 3000)
+            end
+        end
+    end)l Character = User.getUsedCharacter
     
     MySQL.query('SELECT * FROM ouro_bills WHERE charidentifier = ?', {Character.charIdentifier}, function(result)
         TriggerClientEvent('ouro_society:client:ReceiveBills', _source, result or {})
@@ -543,14 +526,12 @@ end)
 -- Get online employees
 RegisterServerEvent('ouro_society:server:GetOnlineEmployees')
 AddEventHandler('ouro_society:server:GetOnlineEmployees', function(job)
-    local _source = source
-    local employees = {}
-    
-    local players = GetPlayers()
-    for _, playerId in ipairs(players) do
-        local User = VORPcore.getUser(tonumber(playerId))
-        if User then
-            local Character = User.getUsedCharacter
+        TriggerClientEvent('vorp:TipRight', _source, Config.Language.YouOffDuty, 3000)
+    else
+        OnDutyPlayers[_source][job] = true
+        TriggerClientEvent('vorp:TipRight', _source, Config.Language.YouOnDuty, 3000)
+    end
+end)        local Character = User.getUsedCharacter
             if Character then
                 -- Check if player has this job
                 MySQL.query('SELECT * FROM ouro_player_jobs WHERE charidentifier = ? AND job = ?', 
